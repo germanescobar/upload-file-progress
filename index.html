@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #progress-bar {
+      background-color: blue; 
+      height: 25px; 
+      width: 0;
+    }
+  </style>
+</head>
+<body>
+  <form id="form">
+    <input type="file" id="file">
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div class="progress" style="width: 400px; background-color: #ddd; height: 25px; margin-top: 30px; border-radius: 3px;">
+    <div id="progress-bar"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    var form = document.getElementById("form");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault()
+      
+      var formData = new FormData()
+      var input = document.getElementById("file")
+      formData.append('file', input.files[0])
+
+      axios.request({
+        method: "post", 
+        url: "http://localhost:3000/upload", 
+        data: formData, 
+        onUploadProgress: (p) => {
+          var progress = p.progress.toFixed(2) * 100;
+          console.log(progress);
+          document.getElementById('progress-bar').setAttribute("style", `width:${progress}%`);
+        }
+      }).then (data => {
+        console.log(data)
+      })
+
+      /*fetch("http://localhost:3000/upload", {
+        method: "post",
+        body: formData
+      }).then(response => {
+        console.log(repsonse)
+      })*/
+    });
+
+  </script>
+</body>
+</html>
